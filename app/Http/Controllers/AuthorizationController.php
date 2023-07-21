@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\Authorization as Organization;
 use Symfony\Component\HttpFoundation\Response as HttpStatusCode;
 
@@ -26,5 +27,12 @@ class AuthorizationController extends Controller
         }
 
         // throw new Exception("Error Processing Request", 1);
+    }
+
+    public function whoami(Request $request)
+    {
+        return response()->json([
+            'organization' => $request->user()
+        ], HttpStatusCode::HTTP_OK);
     }
 }

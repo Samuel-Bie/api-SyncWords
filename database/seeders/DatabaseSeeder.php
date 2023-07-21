@@ -14,6 +14,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $testOrganization = Organization::factory(1)->make()->first();
+        $testOrganization->name = 'test-company';
+        $testOrganization->secret = 'secret';
+        $testOrganization->save();
+        $testOrganization->events()->saveMany(Event::factory(100)->make());
+
+
         Organization::factory(10)->create()->each(function ($organization) {
             $organization->events()->saveMany(Event::factory(10)->make());
         });

@@ -20,7 +20,7 @@ class EventFactory extends Factory
         $start_date = new Carbon(fake()->dateTime());
         $end_date = fake()->dateTimeBetween(
             $start_date,
-            $start_date->addDay()
+            (new Carbon($start_date))->addHours(rand(1, 12))
         );
 
         return [
