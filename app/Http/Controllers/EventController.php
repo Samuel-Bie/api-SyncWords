@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\EventRequest;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\EventResource;
+use App\Http\Requests\EventEditRequest;
 use App\Http\Resources\EventCollectionResource;
 use Symfony\Component\HttpFoundation\Response as HttpStatusCode;
 
@@ -71,6 +72,28 @@ class EventController extends Controller
 
         return response()->json(
             new EventResource($event),
+            HttpStatusCode::HTTP_ACCEPTED,
+        );
+    }
+
+    /**
+     * edit the specified resource in storage.
+     */
+    public function edit(EventEditRequest $request, Event $event)
+    {
+        $response = Gate::inspect('update', $event);
+
+        if (!$response->allowed()) {
+            return response()->json([
+                'message' => $response->message()
+            ], HttpStatusCode::HTTP_FORBIDDEN);
+        }
+
+        $event->update($request->validated());
+
+        return response()->json(
+            // new EventResource($event),
+            [$request->validated(),$request->all()],
             HttpStatusCode::HTTP_ACCEPTED,
         );
     }
