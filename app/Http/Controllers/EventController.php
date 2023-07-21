@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use App\Http\Requests\EventRequest;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\EventCollectionResource;
 use Symfony\Component\HttpFoundation\Response as HttpStatusCode;
@@ -41,8 +42,15 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Event $event)
+    public function show(Request $request, Event $event)
     {
+        $response = Gate::inspect('view', $event);
+
+        if (!$response->allowed()) {
+            return response()->json([
+                'message' => $response->message()
+            ], HttpStatusCode::HTTP_FORBIDDEN);
+        }
         return new EventResource($event);
     }
 
@@ -51,6 +59,14 @@ class EventController extends Controller
      */
     public function update(EventRequest $request, Event $event)
     {
+        $response = Gate::inspect('update', $event);
+
+        if (!$response->allowed()) {
+            return response()->json([
+                'message' => $response->message()
+            ], HttpStatusCode::HTTP_FORBIDDEN);
+        }
+
         $event->update($request->validated());
 
         return response()->json(
@@ -64,6 +80,13 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
+        $response = Gate::inspect('delete', $event);
+
+        if (!$response->allowed()) {
+            return response()->json([
+                'message' => $response->message()
+            ], HttpStatusCode::HTTP_FORBIDDEN);
+        }
         $event->delete();
 
         return response()->json(
