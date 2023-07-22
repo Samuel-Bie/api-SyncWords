@@ -29,6 +29,13 @@ class AuthorizationController extends Controller
         // throw new Exception("Error Processing Request", 1);
     }
 
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([], HttpStatusCode::HTTP_NO_CONTENT);
+    }
+
     public function whoami(Request $request)
     {
         return response()->json([

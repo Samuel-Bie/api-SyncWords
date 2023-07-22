@@ -16,10 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('token', [AuthorizationController::class, 'token']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('whoami', [AuthorizationController::class, 'whoami']);
+
+Route::prefix('auth')->group(function () {
+    Route::post('token', [AuthorizationController::class, 'token']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('whoami', [AuthorizationController::class, 'whoami']);
+        Route::post('logout', [AuthorizationController::class, 'logout']);
+    });
 });
 
 
