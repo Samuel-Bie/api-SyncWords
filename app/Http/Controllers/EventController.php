@@ -92,8 +92,7 @@ class EventController extends Controller
         $event->update($request->validated());
 
         return response()->json(
-            // new EventResource($event),
-            [$request->validated(),$request->all()],
+            new EventResource($event),
             HttpStatusCode::HTTP_ACCEPTED,
         );
     }
