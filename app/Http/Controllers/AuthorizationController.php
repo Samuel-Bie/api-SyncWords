@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\Authorization as Organization;
 use Symfony\Component\HttpFoundation\Response as HttpStatusCode;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class AuthorizationController extends Controller
 {
@@ -25,8 +26,7 @@ class AuthorizationController extends Controller
                 'token' => $organization->createToken($request->input('application', 'spa'))->plainTextToken
             ], HttpStatusCode::HTTP_OK);
         }
-
-        // throw new Exception("Error Processing Request", 1);
+        throw new UnauthorizedHttpException('Invalid login credentials.', "Invalid login credentials.");
     }
 
     public function logout(Request $request)
