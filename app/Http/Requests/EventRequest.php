@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 
 class EventRequest extends FormRequest
 {
@@ -29,18 +30,32 @@ class EventRequest extends FormRequest
             'event_title'       => 'required|string|max:200',
             'event_start_date'  => 'required|date|before:event_end_date',
             'event_end_date'    => 'required|date|after:event_start_date',
-            'event_duration'    => 'required|numeric|max:12',
+            // 'event_duration'    => 'required|numeric|max:12',
         ];
     }
 
     /**
-     * Prepare the data for validation.
+     * Get the "after" validation callables for the request.
      */
-    protected function prepareForValidation(): void
+    public function after(): array
     {
-        $this->merge([
-            'event_duration' => (new Carbon($this->input('event_start_date')))
-                ->diffInRealHours((new Carbon($this->input('event_end_date')))),
-        ]);
+        return [
+            function (Validator $validator) {
+                try {
+                    $date1 = new Carbon($this->input('event_start_date'));
+                    $date2 = (new Carbon($this->input('event_end_date')));
+                    $duration =  $date1
+                        ->diffInRealHours($date2);
+                    if ($duration > 12) {
+                        $validator->errors()->add(
+                            'event_duration',
+                            'Event duration must be less than 12 hours.'
+                        );
+                    }
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
+            }
+        ];
     }
 }
