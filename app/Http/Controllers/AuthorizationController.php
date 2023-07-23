@@ -33,7 +33,9 @@ class AuthorizationController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json([], HttpStatusCode::HTTP_NO_CONTENT);
+        return response()->json([
+            'message' => 'Successfully logged out.'
+        ], HttpStatusCode::HTTP_NO_CONTENT);
     }
 
     public function whoami(Request $request)
