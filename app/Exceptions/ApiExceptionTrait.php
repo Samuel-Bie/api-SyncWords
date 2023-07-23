@@ -84,7 +84,7 @@ trait ApiExceptionTrait
         if ($exception instanceof MethodNotAllowedHttpException) {
             return response()->json([
                 "message" => 'Method not allowed request'
-            ], HttpStatusCode::HTTP_BAD_REQUEST);
+            ], HttpStatusCode::HTTP_METHOD_NOT_ALLOWED);
         }
 
 
